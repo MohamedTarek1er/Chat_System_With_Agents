@@ -6,7 +6,7 @@ def select_context(documents, max_chars=12000):
 
     for document in documents:
 
-        content = document.page_content.strip()
+        content = document["text"].strip()
 
         if not content or content in seen_content:
             continue
@@ -27,10 +27,8 @@ def format_context(documents):
 
     for index, document in enumerate(documents, start=1):
 
-        metadata = document.metadata
-
-        source = metadata.get("document_name", "Unknown document")
-        page = metadata.get("page_number", "Unknown")
+        source = document.get("doc_name") or "Unknown document"
+        page = document.get("page") or "Unknown"
 
         context.append(
             f"""
@@ -39,7 +37,7 @@ def format_context(documents):
             Page: {page}
 
             Content:
-            {document.page_content}
+            {document["text"]}
             """
         )
 
