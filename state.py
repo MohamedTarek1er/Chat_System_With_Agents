@@ -25,7 +25,7 @@ class State(TypedDict, total=False):
 
 def to_evidence_item(doc) -> EvidenceItem:
     meta = doc.metadata or {}
-    source = meta.get("doc_name") or meta.get("source") or meta.get("file_path") or "unknown"
+    source = meta.get("document_name") or meta.get("source") or "unknown"
 
     page = meta.get("page_number")
     if page is None and isinstance(meta.get("page"), int):
