@@ -26,7 +26,8 @@ def format_sources(evidence):
 
         document_name = metadata.get(
             "document_name",
-            metadata.get("source", metadata.get("filename", "Unknown document"))
+            metadata.get("doc_name",
+                metadata.get("source", metadata.get("filename", "Unknown document")))
         )
 
         page_number = metadata.get(

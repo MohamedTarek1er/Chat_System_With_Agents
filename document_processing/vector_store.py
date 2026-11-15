@@ -49,13 +49,14 @@ def store_chunks(chunks: list[Document]) -> int:
     ]
 
     # Keep only metadata types supported by Chroma.
-    for chunk in chunks:
+    for chunk, chunk_id in zip(chunks, chunk_ids):
 
         chunk.metadata = {
             key: value
             for key, value in chunk.metadata.items()
             if isinstance(value, (str, int, float, bool))
         }
+        chunk.metadata["chunk_id"] = chunk_id
 
     vector_store.add_documents(
         documents=chunks,

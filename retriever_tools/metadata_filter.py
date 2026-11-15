@@ -7,7 +7,7 @@ def filter_by_metadata(documents, filters=None):
 
     for document in documents:
 
-        metadata = document.metadata
+        metadata = document
         matches = True
 
         for key, value in filters.items():
