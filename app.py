@@ -1,9 +1,9 @@
 import os
 import tempfile
 import streamlit as st
-from document_processing.document_loader import load_document
-from document_processing.ingestion import ingest_documents
-from orchestrator import run_pipeline
+from ingestion.loader import load_document
+from ingestion.ingestion import ingest_documents
+from graph.runner import run_pipeline
 
 st.set_page_config(
     page_title="Multi-Agent Document QA System",

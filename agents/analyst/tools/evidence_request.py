@@ -1,6 +1,8 @@
 import json
 import re
 
+from core.prompts import EVIDENCE_REQUEST_PROMPT
+
 
 def _format_evidence(evidence):
     """Format evidence items cleanly for the LLM prompt.
@@ -17,7 +19,6 @@ def _format_evidence(evidence):
             page_str = f", p. {page}" if page is not None else ""
             lines.append(f"[{i}] ({doc}{page_str})\n{text.strip()}")
         elif hasattr(item, "page_content"):
-            # LangChain Document – shouldn't arrive here, but be safe
             meta = item.metadata or {}
             doc = meta.get("doc_name", meta.get("source", "unknown"))
             page = meta.get("page_number", meta.get("page"))
@@ -36,10 +37,9 @@ def _parse_json_safe(text):
     """
     fallback = {"need_more_evidence": False, "query": ""}
 
-    # Strip leading/trailing whitespace
     text = text.strip()
 
-    # Strip markdown code fences if present:  ```json ... ``` or ``` ... ```
+    # Strip markdown code fences if present: ```json ... ``` or ``` ... ```
     fence_match = re.search(r"```(?:json)?\s*\n?(.*?)\n?\s*```", text, re.DOTALL)
     if fence_match:
         text = fence_match.group(1).strip()
@@ -52,7 +52,6 @@ def _parse_json_safe(text):
     if not isinstance(result, dict):
         return fallback
 
-    # Validate expected keys exist and have correct types
     if "need_more_evidence" not in result:
         return fallback
 
@@ -69,37 +68,10 @@ def evidence_request(llm, question, evidence):
     """
     context = _format_evidence(evidence)
 
-    prompt = f"""You are an evidence analysis assistant.
-
-User Question:
-{question}
-
-Available Evidence:
-{context}
-
-Check whether the available evidence is sufficient
-to answer the user's question.
-
-If sufficient:
-    Return:
-    {{
-        "need_more_evidence": false,
-        "query": ""
-    }}
-
-If information is missing:
-    Identify exactly what is missing and create
-    a specific search query to retrieve it.
-
-    Return:
-    {{
-        "need_more_evidence": true,
-        "query": "specific search query"
-    }}
-
-Do not invent information.
-Return valid JSON only.
-"""
+    prompt = EVIDENCE_REQUEST_PROMPT.format(
+        question=question,
+        context=context,
+    )
 
     response = llm.invoke(prompt)
 

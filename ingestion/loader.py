@@ -12,8 +12,8 @@ SUPPORTED_EXTENSIONS = {
     ".txt",
 }
 
-def load_document(file_path: str):
 
+def load_document(file_path: str):
     path = Path(file_path)
 
     if not path.is_file():
@@ -26,10 +26,8 @@ def load_document(file_path: str):
 
     if extension == ".pdf":
         loader = PyPDFLoader(str(path))
-
     elif extension == ".docx":
         loader = Docx2txtLoader(str(path))
-
     else:
         loader = TextLoader(
             str(path),
