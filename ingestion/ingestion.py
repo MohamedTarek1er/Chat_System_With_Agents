@@ -2,16 +2,14 @@ import hashlib
 import os
 
 from langchain_core.documents import Document
-from document_processing.text_splitter import split_documents
-
-from document_processing.vector_store import (
+from ingestion.splitter import split_documents
+from ingestion.vector_store import (
     store_chunks,
     delete_document,
 )
 
 
 def ingest_documents(documents: list[Document]) -> int:
-
     if not documents:
         raise ValueError("No documents to ingest.")
 

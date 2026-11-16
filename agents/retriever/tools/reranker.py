@@ -1,11 +1,10 @@
 from sentence_transformers import CrossEncoder
+from core.config import RERANKER_MODEL_NAME
 
-model = CrossEncoder(
-    "cross-encoder/ms-marco-MiniLM-L-6-v2"
-)
+model = CrossEncoder(RERANKER_MODEL_NAME)
+
 
 def rerank_documents(query, documents, top_k=5):
-
     if not documents:
         return []
 

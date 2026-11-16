@@ -1,13 +1,16 @@
 import re
 from langchain_core.documents import Document
 from langchain_community.retrievers import BM25Retriever
-from document_processing.vector_store import get_vector_store
-from state import to_evidence_item
+
+from ingestion.vector_store import get_vector_store
+from graph.state import to_evidence_item
+
+
 def tokenize(text):
     return re.findall(r"\w+", text.lower())
 
-def build_bm25_retriever(k=10):
 
+def build_bm25_retriever(k=10):
     vector_store = get_vector_store()
 
     stored_data = vector_store.get(
@@ -41,6 +44,5 @@ def build_bm25_retriever(k=10):
 
 
 def keyword_search(query, retriever):
-
     results = retriever.invoke(query)
     return [to_evidence_item(result) for result in results]

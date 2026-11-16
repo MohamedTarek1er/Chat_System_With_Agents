@@ -18,8 +18,8 @@ document_comparison), switch to `llm.bind_tools(tools)` with a ToolNode
 loop — but that decision is still open.
 """
 
-from analyst_tools.data_analysis import data_analysis
-from analyst_tools.evidence_request import evidence_request
+from agents.analyst.tools.data_analysis import data_analysis
+from agents.analyst.tools.evidence_request import evidence_request
 
 
 def analyst_node(state, llm):
