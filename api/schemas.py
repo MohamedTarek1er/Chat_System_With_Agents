@@ -21,6 +21,7 @@ class QueryRequest(BaseModel):
         return value
 
 
+
 class Source(BaseModel):
     text: str
     doc_name: str
@@ -49,3 +50,9 @@ class DocumentList(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str
+
+
+class VoiceQueryResponse(QueryResponse):
+    transcript: str
+    language: str
+    duration_seconds: float    
