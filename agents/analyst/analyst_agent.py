@@ -37,8 +37,7 @@ def make_analyst_node(llm):
             )
         except GraphRecursionError:
             return {"analysis": "Analysis step limit reached; answering with available evidence.",
-                    "need_more_evidence": False, "followup_query": "",
-                    "evidence_complete": True, "loop_count": loop_count}
+                    "need_more_evidence": False, "followup_query": ""}
 
         followup = out.get("followup_query") or ""
         need_more = bool(followup)
