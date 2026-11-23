@@ -70,5 +70,15 @@ def upload_document(file: UploadFile = File(...)):
 @router.get("/documents", response_model=DocumentList)
 def list_documents():
     data = get_vector_store().get(include=["metadatas"])
-    names = {m.get("document_name") for m in (data.get("metadatas") or []) if m}
-    return {"documents": sorted(name for name in names if name)}
+    names = set()
+    for metadata in data.get("metadatas") or []:
+        if not metadata:
+            continue
+        name = (
+            metadata.get("doc_name")
+            or metadata.get("document_name")
+            or Path(str(metadata.get("source", ""))).name
+        )
+        if name:
+            names.add(name)
+    return {"documents": sorted(names)}
