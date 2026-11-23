@@ -1,62 +1,46 @@
 import statistics
+from typing import Literal
+from langchain_core.tools import tool
 
-def calculate(operation, numbers):
-
+@tool
+def calculate_tool(
+    operation: Literal["add", "subtract", "multiply", "divide",
+                    "average", "median", "percentage", "ratio"],
+    numbers: list[float],
+) -> str:
+    """Exact arithmetic over a list of numbers. Use for ALL averages, differences,
+    percentages and ratios. For 'percentage' pass [value, total]; for 'ratio' pass two numbers."""
     if not numbers:
-        raise ValueError("Numbers list cannot be empty.")
+        return "Error: numbers list cannot be empty."
 
     if operation == "add":
-        return sum(numbers)
-
-    elif operation == "subtract":
+        return str(sum(numbers))
+    if operation == "subtract":
         result = numbers[0]
-
-        for number in numbers[1:]:
-            result -= number
-
-        return result
-
-    elif operation == "multiply":
+        for n in numbers[1:]:
+            result -= n
+        return str(result)
+    if operation == "multiply":
         result = 1
-
-        for number in numbers:
-            result *= number
-
-        return result
-
-    elif operation == "divide":
+        for n in numbers:
+            result *= n
+        return str(result)
+    if operation == "divide":
         result = numbers[0]
-
-        for number in numbers[1:]:
-            if number == 0:
-                raise ValueError("Cannot divide by zero.")
-
-            result /= number
-
-        return result
-
-    elif operation == "average":
-        return statistics.mean(numbers)
-
-    elif operation == "median":
-        return statistics.median(numbers)
-
-    elif operation == "percentage":
+        for n in numbers[1:]:
+            if n == 0:
+                return "Error: cannot divide by zero."
+            result /= n
+        return str(result)
+    if operation == "average":
+        return str(statistics.mean(numbers))
+    if operation == "median":
+        return str(statistics.median(numbers))
+    if operation in ("percentage", "ratio"):
         if len(numbers) != 2:
-            raise ValueError("Provide value and total.")
-
-        value, total = numbers
-
-        if total == 0:
-            raise ValueError("Total cannot be zero.")
-
-        return (value / total) * 100
-
-    elif operation == "ratio":
-        if len(numbers) != 2:
-            raise ValueError("Provide exactly two numbers.")
-
-        return f"{numbers[0]}:{numbers[1]}"
-
-    else:
-        raise ValueError("Unsupported operation.")
+            return f"Error: '{operation}' needs exactly two numbers."
+        a, b = numbers
+        if operation == "percentage":
+            return "Error: total cannot be zero." if b == 0 else str((a / b) * 100)
+        return f"{a}:{b}"
+    return "Error: unsupported operation."

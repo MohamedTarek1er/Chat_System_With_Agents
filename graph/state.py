@@ -1,7 +1,12 @@
 import hashlib
 import os
 from typing import List, Optional, TypedDict
+from langchain.agents import AgentState
 
+
+class AnalystState(AgentState):
+    evidence: list
+    followup_query: str | None
 
 class EvidenceItem(TypedDict):
     text: str

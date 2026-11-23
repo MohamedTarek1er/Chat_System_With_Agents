@@ -40,7 +40,7 @@ def load_document(file_path: str):
     for document in documents:
 
         document.metadata["source"] = str(path.resolve())
-        document.metadata["document_name"] = path.name
+        document.metadata["doc_name"] = path.name
         document.metadata["file_type"] = extension
 
         # PDF page numbers start from 0 in PyPDFLoader.

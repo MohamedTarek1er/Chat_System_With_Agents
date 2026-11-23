@@ -1,7 +1,28 @@
 from pathlib import Path
-
+from langchain_core.tools import tool
+from core.config import UPLOAD_DIR
 import pdfplumber
 from docx import Document
+
+
+@tool
+def extract_tables_tool(doc_name: str, page: int | None = None) -> str:
+    """Extract tables from an uploaded PDF/DOCX by its document name (as shown in the
+    evidence), optionally only from one page. Returns markdown-style rows."""
+    path = Path(UPLOAD_DIR) / doc_name
+    if not path.is_file():
+        return f"Error: file '{doc_name}' not found in uploads directory."
+    tables = extract_tables(path)
+    if page is not None:
+        tables = [t for t in tables if t["page"] == page]
+    if not tables:
+        return "No tables found."
+    out = []
+    for t in tables:
+        rows = "\n".join(" | ".join(str(c or "") for c in r) for r in t["data"])
+        out.append(f"[{t['source']} p.{t['page']} table {t['table_number']}]\n{rows}")
+    return "\n\n".join(out)[:6000] 
+
 
 def extract_pdf_tables(file_path):
 

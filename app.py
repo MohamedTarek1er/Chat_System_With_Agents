@@ -1,6 +1,6 @@
-import os
-import tempfile
+from pathlib import Path
 import streamlit as st
+from core.config import UPLOAD_DIR
 from ingestion.loader import load_document
 from ingestion.ingestion import ingest_documents
 from graph.runner import run_pipeline
@@ -25,29 +25,26 @@ with st.sidebar:
 
     if uploaded_files and st.button("Ingest Documents", use_container_width=True):
         total_chunks = 0
+        UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
         with st.spinner("Processing and ingesting documents..."):
             for uploaded_file in uploaded_files:
-                file_suffix = os.path.splitext(uploaded_file.name)[1]
-                with tempfile.NamedTemporaryFile(delete=False, suffix=file_suffix) as tmp_file:
-                    tmp_file.write(uploaded_file.read())
-                    tmp_path = tmp_file.name
+                safe_name = Path(uploaded_file.name).name
+                file_path = UPLOAD_DIR / safe_name
 
                 try:
-                    docs = load_document(tmp_path)
-                    # Fix source name to retain original uploaded filename
+                    file_path.write_bytes(uploaded_file.getbuffer())
+                    docs = load_document(str(file_path))
+
+                    # Ensure consistent doc_name metadata across all loaders
                     for d in docs:
-                        d.metadata["source"] = uploaded_file.name
-                        d.metadata["document_name"] = uploaded_file.name
-                        d.metadata["doc_name"] = uploaded_file.name
+                        d.metadata["doc_name"] = safe_name
 
                     num_chunks = ingest_documents(docs)
                     total_chunks += num_chunks
-                    st.success(f"Ingested '{uploaded_file.name}' ({num_chunks} chunks)")
+                    st.success(f"Ingested '{safe_name}' ({num_chunks} chunks)")
                 except Exception as e:
-                    st.error(f"Error processing {uploaded_file.name}: {e}")
-                finally:
-                    if os.path.exists(tmp_path):
-                        os.remove(tmp_path)
+                    st.error(f"Error processing {safe_name}: {e}")
 
         st.info(f"Total chunks indexed: {total_chunks}")
 

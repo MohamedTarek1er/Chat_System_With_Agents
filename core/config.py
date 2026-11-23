@@ -25,3 +25,5 @@ MAX_CHARS = 12000
 # Vector Store Settings
 CHROMA_PERSIST_DIRECTORY = "./chroma_db"
 CHROMA_COLLECTION_NAME = "knowledge_base"
+UPLOAD_DIR = BASE_DIR / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)

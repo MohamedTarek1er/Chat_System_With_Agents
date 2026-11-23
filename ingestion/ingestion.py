@@ -1,4 +1,3 @@
-import hashlib
 import os
 
 from langchain_core.documents import Document
@@ -23,9 +22,7 @@ def ingest_documents(documents: list[Document]) -> int:
         meta["doc_name"] = os.path.basename(str(meta.get("source", "unknown")))
         if isinstance(meta.get("page"), int):
             meta["page_number"] = meta["page"] + 1  # 1-based for citations
-        meta["chunk_id"] = hashlib.md5(
-            f"{meta['doc_name']}|{meta.get('page_number')}|{chunk.page_content}".encode()
-        ).hexdigest()[:8]
+        
 
     # Get unique document sources.
     sources = {

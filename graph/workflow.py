@@ -8,7 +8,7 @@ from core.llm import llm
 from core.config import MAX_LOOPS
 from graph.state import State
 from agents.retriever.retriever_agent import retrieve
-from agents.analyst.analyst_agent import analyst_node
+from agents.analyst.analyst_agent import make_analyst_node
 from agents.answer.answer_agent import answer_question
 
 
@@ -25,11 +25,6 @@ def retriever_node(state: State) -> dict:
         existing.setdefault(item["chunk_id"], item)
 
     return {"evidence": list(existing.values())}
-
-
-def analyst_node_wrapper(state: State) -> dict:
-    """Run analyst tools on evidence."""
-    return analyst_node(state, llm)
 
 
 def answer_node(state: State) -> dict:
@@ -76,7 +71,7 @@ def build_graph():
     graph = StateGraph(State)
 
     graph.add_node("retriever", retriever_node)
-    graph.add_node("analyst", analyst_node_wrapper)
+    graph.add_node("analyst", make_analyst_node(llm))
     graph.add_node("bump_loop", bump_loop_count)
     graph.add_node("answer", answer_node)
 

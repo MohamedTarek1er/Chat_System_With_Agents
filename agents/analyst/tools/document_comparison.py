@@ -1,38 +1,31 @@
-from core.llm import llm
+from typing import Annotated
+
+from langchain_core.tools import tool
+from langgraph.prebuilt import InjectedState
+
+from core.llm import get_llm
 from core.prompts import DOCUMENT_COMPARISON_PROMPT
 
 
-def compare_documents(query, documents):
-    if not documents:
+@tool
+def compare_documents(
+    query: str,
+    evidence: Annotated[list, InjectedState("evidence")],
+) -> str:
+    """Compare what the different retrieved documents say about `query`:
+    similarities, differences, methods, results and conclusions."""
+    if not evidence:
         return "No evidence was provided for comparison."
 
-    grouped_evidence = {}
-    for document in documents:
-        metadata = document.metadata
-        source = metadata.get(
-            "document_name",
-            metadata.get("source", "Unknown document")
+    grouped: dict[str, list[str]] = {}
+    for item in evidence:
+        page = item.get("page")
+        grouped.setdefault(item["doc_name"], []).append(
+            f"Page {page if page is not None else '?'}:\n{item['text']}"
         )
-
-        page = metadata.get("page_number", "Unknown")
-
-        if source not in grouped_evidence:
-            grouped_evidence[source] = []
-
-        grouped_evidence[source].append(
-            f"Page {page}:\n{document.page_content}"
-        )
-
-    context = ""
-    for source, contents in grouped_evidence.items():
-        context += f"\nDocument: {source}\n"
-        context += "\n".join(contents)
-
-    prompt = DOCUMENT_COMPARISON_PROMPT.format(
-        query=query,
-        context=context,
+    context = "\n\n".join(
+        f"Document: {doc}\n" + "\n".join(chunks) for doc, chunks in grouped.items()
     )
 
-    response = llm.invoke(prompt)
-
-    return response.content
+    prompt = DOCUMENT_COMPARISON_PROMPT.format(query=query, context=context)
+    return get_llm(temperature=0).invoke(prompt).content

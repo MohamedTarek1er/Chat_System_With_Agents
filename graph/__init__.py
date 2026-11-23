@@ -6,7 +6,6 @@ from graph.state import State, EvidenceItem, to_evidence_item
 from graph.workflow import (
     build_graph,
     retriever_node,
-    analyst_node_wrapper,
     answer_node,
     after_analyst,
     bump_loop_count,
@@ -19,7 +18,6 @@ __all__ = [
     "to_evidence_item",
     "build_graph",
     "retriever_node",
-    "analyst_node_wrapper",
     "answer_node",
     "after_analyst",
     "bump_loop_count",
