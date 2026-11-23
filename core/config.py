@@ -10,6 +10,9 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL")
 
+_temp = os.getenv("LLM_TEMPERATURE","").strip()
+LLM_TEMPERATURE = float(_temp) if _temp else None
+
 # Model Names
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 RERANKER_MODEL_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
