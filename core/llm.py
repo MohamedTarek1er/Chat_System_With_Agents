@@ -1,6 +1,6 @@
 from functools import lru_cache
 from langchain_openai import ChatOpenAI
-from core.config import OPENAI_API_KEY, OPENROUTER_BASE_URL, OPENROUTER_MODEL
+from core.config import OPENAI_API_KEY, OPENAI_BASE_URL, OPENAI_MODEL
 
 
 @lru_cache(maxsize=4)
@@ -11,8 +11,8 @@ def get_llm(temperature: float = 0.0) -> ChatOpenAI:
         )
     return ChatOpenAI(
         api_key=OPENAI_API_KEY,
-        base_url=OPENROUTER_BASE_URL,
-        model=OPENROUTER_MODEL,
+        base_url=OPENAI_BASE_URL,
+        model=OPENAI_MODEL,
         temperature=temperature,
     )
 

@@ -7,8 +7,8 @@ load_dotenv(BASE_DIR / ".env", override=True)
 
 # LLM Settings
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL")
-OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL")
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL")
 
 # Model Names
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
