@@ -67,8 +67,9 @@ def transcribe(audio_bytes, language=None, translate=False):
                 vad_filter=True,  # skips silence, which stops Whisper inventing text
             )
         except Exception as error:
+            logger.exception("Whisper failed to transcribe audio")
             raise SpeechError(
-                "The audio could not be processed (unreadable file or bad language code)."
+                f"The audio could not be processed : {type(error).__name__}:{error}"
             ) from error
 
         if info.duration > MAX_AUDIO_SECONDS:
