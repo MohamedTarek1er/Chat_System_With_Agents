@@ -28,6 +28,9 @@ class Source(BaseModel):
     chunk_id: str
     score: Optional[float] = None
 
+class DeleteResponse(BaseModel):
+    document_name: str
+    chunks_deleted: int
 
 class QueryResponse(BaseModel):
     answer: str

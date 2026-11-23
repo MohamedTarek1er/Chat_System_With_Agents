@@ -3,7 +3,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from api.schemas import DocumentList, UploadResponse
+from api.schemas import DocumentList, UploadResponse , DeleteResponse
 from ingestion.ingestion import ingest_documents
 from ingestion.loader import load_document
 from ingestion.vector_store import get_vector_store
@@ -82,3 +82,22 @@ def list_documents():
         if name:
             names.add(name)
     return {"documents": sorted(names)}
+
+
+@router.delete("/documents/{document_name}", response_model=DeleteResponse)
+def remove_document(document_name: str):
+    store = get_vector_store()
+    ids = store.get(where={"doc_name": document_name}, include=["metadatas"])["ids"]
+
+    if not ids:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No document named '{document_name}'. Use GET /documents for the exact names.",
+        )
+
+    store.delete(ids=ids)
+
+    # Also remove the saved copy so uploads/ matches the index.
+    (UPLOAD_DIR / Path(document_name).name).unlink(missing_ok=True)
+
+    return {"document_name": document_name, "chunks_deleted": len(ids)}
