@@ -3,6 +3,7 @@ import streamlit as st
 from core.config import UPLOAD_DIR
 from ingestion.loader import load_document
 from ingestion.ingestion import ingest_documents
+from ingestion.vector_store import delete_document, clear_vector_store
 from graph.runner import run_pipeline
 
 st.set_page_config(
@@ -47,6 +48,36 @@ with st.sidebar:
                     st.error(f"Error processing {safe_name}: {e}")
 
         st.info(f"Total chunks indexed: {total_chunks}")
+
+    # Delete Ingestion / Manage Existing Documents
+    st.markdown("---")
+    st.subheader("🗑️ Delete Ingestion")
+
+    existing_files = [f.name for f in UPLOAD_DIR.iterdir() if f.is_file()] if UPLOAD_DIR.exists() else []
+
+    if existing_files:
+        selected_file = st.selectbox(
+            "Select document to delete",
+            options=existing_files,
+            key="delete_doc_select",
+        )
+        if st.button("Delete Selected Document", use_container_width=True):
+            file_to_del = UPLOAD_DIR / selected_file
+            delete_document(str(file_to_del.resolve()))
+            delete_document(selected_file)
+            if file_to_del.exists():
+                file_to_del.unlink()
+            st.success(f"Deleted '{selected_file}' from vector store and storage.")
+            st.rerun()
+
+    if st.button("Delete All Ingestion Data", use_container_width=True):
+        clear_vector_store()
+        if UPLOAD_DIR.exists():
+            for f in UPLOAD_DIR.iterdir():
+                if f.is_file():
+                    f.unlink()
+        st.success("All ingested documents and vector store data have been deleted.")
+        st.rerun()
 
     st.markdown("---")
     st.markdown("### ⚙️ Pipeline Info")

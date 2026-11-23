@@ -8,6 +8,7 @@ from ingestion.vector_store import (
     get_vector_store,
     store_chunks,
     delete_document,
+    clear_vector_store,
     search_documents,
 )
 from ingestion.ingestion import ingest_documents
@@ -18,6 +19,7 @@ __all__ = [
     "get_vector_store",
     "store_chunks",
     "delete_document",
+    "clear_vector_store",
     "search_documents",
     "ingest_documents",
 ]

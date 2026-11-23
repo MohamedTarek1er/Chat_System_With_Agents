@@ -80,6 +80,18 @@ def delete_document(source: str) -> None:
         where={"source": source}
     )
 
+def clear_vector_store() -> None:
+    vector_store = get_vector_store()
+    try:
+        vector_store.reset_collection()
+    except Exception:
+        try:
+            stored = vector_store.get()
+            if stored and "ids" in stored and stored["ids"]:
+                vector_store.delete(ids=stored["ids"])
+        except Exception:
+            pass
+
 
 def search_documents(
     query: str,
