@@ -5,6 +5,7 @@ from core.config import LLM_TEMPERATURE, OPENAI_API_KEY, OPENAI_BASE_URL, OPENAI
 
 @lru_cache(maxsize=4)
 def get_llm(temperature: float | None = LLM_TEMPERATURE) -> ChatOpenAI:
+    
     if not OPENAI_API_KEY:
         raise ValueError(
             "Missing OPENAI_API_KEY. Create a .env file in the project root with OPENAI_API_KEY=your_key."
@@ -21,6 +22,7 @@ def get_llm(temperature: float | None = LLM_TEMPERATURE) -> ChatOpenAI:
 
 
 def __getattr__(name: str):
+    
     if name == "llm":
         return get_llm()
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

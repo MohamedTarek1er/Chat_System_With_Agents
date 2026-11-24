@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 # These imports pull in the pipeline, so the heavy models load once,
 # when the server starts, not on the first request.
-from api.routers import documents, query , voice
+from api.routers import documents, query , voice, report
 from api.schemas import HealthResponse
 from core.speech import warm_up
 
@@ -29,6 +29,7 @@ app = FastAPI(title="Multi-Agent RAG API", version="0.1.0", lifespan=lifespan)
 app.include_router(query.router)
 app.include_router(documents.router)
 app.include_router(voice.router)
+app.include_router(report.router)
 
 # app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
 
