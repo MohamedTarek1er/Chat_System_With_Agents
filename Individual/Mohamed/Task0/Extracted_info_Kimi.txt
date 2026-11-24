@@ -1,0 +1,19 @@
+Model Overview.
+Mixture of Experts (MoE).
+Attention Mechanism.
+Training Methodology.
+Inference and Performance.
+Architectural Innovations, particularly compared with DeepSeek-V3.
+
+
+three pages, IEEE conference format, two columns, 
+and contain an abstract, keywords, technical analysis, conclusion, and IEEE references.
+
+
+parameters: 32 billion activated parameters and 1 trillion total parameters.
+
+optimizer: MuonClip optimizer
+
+pre-trained: on 15.5 trillion high-quality tokens
+
+optimizer: Muon substantially outperforms AdamW

@@ -2,7 +2,7 @@ from functools import lru_cache
 from langchain_openai import ChatOpenAI
 from core.config import LLM_TEMPERATURE, OPENAI_API_KEY, OPENAI_BASE_URL, OPENAI_MODEL
 
- 
+
 @lru_cache(maxsize=4)
 def get_llm(temperature: float | None = LLM_TEMPERATURE) -> ChatOpenAI:
     if not OPENAI_API_KEY:
