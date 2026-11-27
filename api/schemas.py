@@ -55,4 +55,9 @@ class HealthResponse(BaseModel):
 class VoiceQueryResponse(QueryResponse):
     transcript: str
     language: str
-    duration_seconds: float    
+    duration_seconds: float
+
+
+class OCRResponse(BaseModel):
+    filename: str
+    text: str
